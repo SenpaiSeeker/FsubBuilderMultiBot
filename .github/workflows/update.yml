@@ -1,0 +1,43 @@
+name: Update Branch
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update_branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure Git user
+        run: |
+          git config --global user.email "support@norsodikin.ltd"
+          git config --global user.name "ɴᴏʀ sᴏᴅɪᴋɪɴ"
+
+      - name: Get current branch name
+        id: branch_name
+        run: echo "BRANCH=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
+
+      - name: Create orphan branch
+        run: |
+          git checkout --orphan temp-branch
+
+      - name: Add all changes
+        run: |
+          git add -A
+
+      - name: Commit changes
+        run: |
+          COMMIT_MESSAGE=$(TZ=Asia/Jakarta date +"%Y-%m-%d %H:%M:%S")
+          git commit -m "$COMMIT_MESSAGE"
+
+      - name: Replace original branch
+        run: |
+          git branch -D ${{ env.BRANCH }}
+          git branch -m ${{ env.BRANCH }}
+
+      - name: Force push updated branch
+        run: |
+          git push --force origin ${{ env.BRANCH }}
