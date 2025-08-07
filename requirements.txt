@@ -1,4 +1,4 @@
 git+https://github.com/TelegramPlayground/pyrogram
 git+https://github.com/TelegramPlayGround/pyrogram-tgcrypto
-norsodikin
+norsodikin==1.0.3
 python-dotenv
